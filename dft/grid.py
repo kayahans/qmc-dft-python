@@ -21,6 +21,14 @@ class Grid(obj):
     #end def
 
     def get_grid(self):
+        px, py, pz = self.get_xyz()
+        
+        self.dv = (px[1]-px[0])*(py[1]-py[0])*(pz[1]-pz[0])
+        self.dx = (px[1]-px[0], py[1]-py[0], pz[1]-pz[0])
+        return meshgrid(px,py,pz)
+    #end def
+
+    def get_xyz(self):
         min_corner  = self.bbox.min
         max_corner  = self.bbox.max
         shape = self.shape
@@ -28,11 +36,9 @@ class Grid(obj):
         py = linspace(min_corner[1], max_corner[1], shape[1])
         pz = linspace(min_corner[2], max_corner[2], shape[2])
 
-        self.dv = (px[1]-px[0])*(py[1]-py[0])*(pz[1]-pz[0])
-        self.dx = (px[1]-px[0], py[1]-py[0], pz[1]-pz[0])
-        return meshgrid(px,py,pz)
+        return px, py, pz
     #end def
-
+    
     def get_gridv(self):
         x, y, z = self.get_grid()
         

@@ -36,6 +36,7 @@ class Iterator(obj):
         i = 0
         Eprev = 0
         ediff = 10**6
+        psi = None
         while ediff > self.etol:
             E, psi = eigsh(Vtot, k=int(ceil(nelect*1.0/2)), which='SA')
 
@@ -62,11 +63,14 @@ class Iterator(obj):
                 Vtot = hartree.v + xc.v + T.v + Vext.v
                
             else:
+                psi = Wavefunction(psi, self.ham)
                 E     = E[0]
                 ediff = 0
             #end if
-            
+        self.psi = psi
+        self.d   = psi.get_density()
             
         #end while
 
+        
         print '\nFinal energy: ', E + V_nn, '\n'
