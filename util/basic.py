@@ -7,8 +7,10 @@ from numpy.linalg import norm
 import pdb
 from collections import OrderedDict
 import scipy.integrate as integrate
-import matplotlib.pyplot as plt
 from scipy import stats
+import sys
+
+sys.dont_write_bytecode = True
 
 class obj(object):
     "General all-purpose object"
@@ -17,10 +19,22 @@ class obj(object):
         attr = OrderedDict(sorted(attr.items()))
         c = ''
         for i in attr.keys():
-            c+= '\n'+ i+' \t= '+str(attr[i])
+            s = str(type(attr[i]))
+            s = s.rsplit('\'', 2)[1]
+            c+= '\n'+ i+' \t\t' + s 
         #end for
         return c[1:] #remove heading whitespace
     #end def __str__
+
+    def error(self, text):
+        print 'ERROR: ', str(text)
+        exit()
+    #end def
+
+    def warning(self, text):
+        print 'WARNING: ', str(text)
+    #end def
+    
 #end class obj
 
 def quad(x):

@@ -4,6 +4,9 @@ from numpy import array, abs, pi, sqrt, power, log, arctan
 from util.basic import obj
 from copy import copy
 import pdb
+import sys
+
+sys.dont_write_bytecode = True
 
 def zero_low_rho(rho, tol=1e-10):
     rho[rho<tol]=0.
@@ -19,28 +22,27 @@ class Functional(obj):
     #end def
 #end class
 
-class Xc(Functional):
-    def __init__(self, rho, name = 'ldat', pol= False):
-        if pol:
-            rhoa = rho[0]
-            rhob = rho[1]
-        else:
-            rhoa = rho
-            rhob = copy(rho)
-            
-        if name == 'lda':
-            self.xa = calc_xs(rhoa)
-            self.xb = calc_xs(rhob)
-            self.c  = calc_vwn5(rhoa, rhob)
-        elif name == 'ldat':
-            self.xa = calc_xs(rho)
-            o = obj()
-            o.f = 0.0
-            o.F = 0.0
-            self.ca  = o
-        #end if
+class XCFun(Functional):
+    def __init__(self, name = 'ldax', pol= False):
+        self.name = name
+        self.pol  = pol
     #end def
 
+    def get_xc(self, density):
+        o = obj()
+        name = self.name
+        if name == 'ldax':
+            o.x = self.calc_x(density)
+            o.c = self.empty(density)
+        elif name == 'lda':
+            o.x = self.calc_xs(density)
+            o.c = self.calc_vwn5(density)
+        #end if
+
+        return o
+    #end def
+    
+            
     def get_xaf(self):
         return self.xa.f
     #end def
@@ -64,9 +66,17 @@ class Xc(Functional):
     def get_caf(self):
         return self.ca.F
     #end def
+
+    def empty(self,rho):
+        o = obj()
+        o.F = 0
+        o.f = rho*0.
+        return o
+    #end def
+        
     def calc_xs(self, rho):
         '''
-        2/3 alpha
+        2/3 alpha exchange
         '''
         alpha = 2./3
         fac = -2.25*alpha*power(.75/pi, 1./3)
@@ -80,12 +90,12 @@ class Xc(Functional):
     #end def
 
     def calc_x(self, rho):
-        
-        fac = -3./4*power(3./pi, 1./3)
-        
-        F = lambda fac, rho : fac*power(rho,4./3)
-        f = lambda fac, rho : fac*power(rho,1./3)
-
+        '''
+        3/4 slater exchange
+        '''
+        fac = power(3./pi, 1./3)
+        f   = lambda fac, rho : -fac*power(rho,1./3)
+        F   = lambda fac, rho : -sum(3./4*fac*power(rho, 4./3))
         F=F(fac,rho)
         f=f(fac,rho)
     

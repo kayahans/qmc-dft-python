@@ -9,6 +9,9 @@ from collections import OrderedDict
 import scipy.integrate as integrate
 import matplotlib.pyplot as plt
 from scipy import stats
+import sys
+
+sys.dont_write_bytecode = True
 
 class obj(object):
     "General all-purpose object"

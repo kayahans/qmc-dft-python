@@ -8,6 +8,9 @@ from math import factorial
 from scipy.misc import factorial2
 from basic import obj
 import matplotlib.pyplot as plt
+import sys
+
+sys.dont_write_bytecode = True
 
 class Orbital(obj):
     def __init__():

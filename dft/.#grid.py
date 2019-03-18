@@ -1,1 +1,0 @@
-kayahansaritas@Kayahans-MacBook-Pro.local.234

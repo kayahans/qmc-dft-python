@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+import sys
+
+sys.dont_write_bytecode = True
 
 rvdw = [
         1.0000, # dummy
