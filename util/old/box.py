@@ -1,25 +1,17 @@
 #!/usr/bin/env python
 
-from numpy import max, min, array, place
+from numpy import max, min, array, place, zeros, linspace
 from itertools import combinations
 from numpy.linalg import norm
+from util.basic import obj
 import pdb
 
-class Box():
+class Box(obj):
     def __init__(self):
-        self.origin   = array([-10,-10,-10])
-        self.corner   = array([10,10,10])
-        self.pad      = 5
+        self.origin   = array([0,0,0])
+        self.corner   = array([0,0,0])
         self.periodicity = [False, False, False]
     #end def __init__
-
-    def __repr__(self):
-        c =  'Origin = ' +  str(self.origin) + '\n'
-        c += 'Corner = ' +  str(self.corner) + '\n'
-        c += 'Pad    = ' +  str(self.pad) + '\n'
-        c += 'Periodicity ' + str(self.periodicity) + '\n'
-        return c
-    #end def __repr__
     
     def from_atoms(self, atoms):
         origin = array([1e6, 1e6, 1e6])
@@ -53,9 +45,29 @@ class Box():
         self.corner = corner
     #end def from_atoms
 
-    def from_len(self, len):
-       self.origin = -len*1.0/2
-       self.corner = len*1.0/2
+    def from_len(self, length, dim=None):
+       if dim == 3:
+           self.origin = array([0., 0., 0.])
+           self.corner = -length*array([1., 1., 1.])/2
+       elif dim == 1:
+           self.origin = array([0.])
+           self.corner = -length*array([1.])/2
+        #end if
+        
     #end def from_len
     
 #end class Box
+
+
+class Grid(obj):
+    def __init__(self, shape, box):
+        b = box
+        diag  = b.origin-2*b.corner
+        pdb.set_trace()
+        
+        self.shape  = [int(shape)]
+        self.data   = zeros(self.shape)
+        self.points = linspace(b.corner,  b.origin-b.corner, self.shape[0])
+        self.dx     = self.points[1]-self.points[0]
+    #end def
+
