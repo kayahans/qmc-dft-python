@@ -19,7 +19,7 @@ git clone https://github.com/kayahans/qmc-dft-python.git
 
 # Scientific codes
 ## DFT
-VASP: https://www.vasp.at/ (License required)
+VASP: https://www.vasp.at/ 
 
 QE  : https://www.quantum-espresso.org/ 
 
