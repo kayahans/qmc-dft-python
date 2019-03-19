@@ -20,14 +20,19 @@ git clone https://github.com/kayahans/qmc-dft-python.git
 # Scientific codes
 ## DFT
 VASP: https://www.vasp.at/ (License required)
+
 QE  : https://www.quantum-espresso.org/ 
 
 GAMESS: https://www.msg.chem.iastate.edu/gamess/
+
 NWCHEM: www.nwchem-sw.org/
+
 PySCF : https://sunqm.github.io/pyscf/
 
 ## QMC
 QMCPACK: https://qmcpack.org/
+
 CASINO : https://vallico.net/casinoqmc/
+
 QWALK  : http://qwalk.github.io/mainline/
 
