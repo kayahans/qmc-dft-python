@@ -2,7 +2,7 @@
 
 QMC-DFT-Python is a lightweight open-source code for scientits and enthusiasts to understand the basic concepts behind most popular electronic structure calculation methods: Density Functional Theory (DFT) and quantum Monte carlo (QMC), without juggling through the advanced codes. Although there are numerous brilliant textbooks in the fields of QMC and DFT, so far they largely remain conceptual. I think people would benefit from reading the codes in here start code development in these fields. Material in this repository can easily be adapted for an undergraduate scientific computation course. There are various memory and performance considerations in the code, but they are very minimal at this stage to focus on the learning part. Please refer to the links below for textbooks I would recommend and links to state of the art codes. 
 
-# Downloading QMC-DFT-Python
+# Downloading qmc-dft-python
 git clone https://github.com/kayahans/qmc-dft-python.git
 
 # References
