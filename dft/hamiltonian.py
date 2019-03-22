@@ -17,6 +17,7 @@ class Hamiltonian(obj):
             self.hartree = Hartree(system, grid)
             self.xc      = XC(system, grid,name=xc)
         #end def
+        
 if __name__ == '__main__':
     from interactions import Coulomb, Kinetic
     from util.geom    import h, he

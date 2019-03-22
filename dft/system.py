@@ -49,10 +49,9 @@ class System(obj):
     
 if __name__ == '__main__':
     from util.geom    import h, he
-    import pdb
     
-    aa = System(h)
-    aa.solve()
-    dd = aa.get_density()
-    aa.plot_density()
-    pdb.set_trace()
+    hydrogen = System(h)
+    hydrogen.solve()
+    h_density = hydrogen.get_density()
+    h_density.plot_density()
+    

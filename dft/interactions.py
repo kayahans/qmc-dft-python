@@ -14,8 +14,6 @@ from itertools    import combinations
 import sys
 sys.dont_write_bytecode = True
 
-import pdb
-
 class Interaction(obj):
     def __init__(self, system, grid):
         assert isinstance(system, Molecule)
@@ -209,4 +207,3 @@ if __name__ == '__main__':
     hh     = Hartree(system, grid)
     kk     = Kinetic(system, grid)
     xc     = XC(system, grid)
-    pdb.set_trace()
