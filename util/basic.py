@@ -18,14 +18,26 @@ class obj(object):
         attr = self.__dict__
         attr = OrderedDict(sorted(attr.items()))
         c = ''
+
         for i in attr.keys():
             s = str(type(attr[i]))
             s = s.rsplit('\'', 2)[1]
             c+= '\n'+ i+' \t\t' + s 
         #end for
-        return c[1:] #remove heading whitespace
-    #end def __str__
 
+        return c[1:] #remove heading whitespace
+    #end def __repr__
+
+    def _verbose(self):
+        attr = self.__dict__
+        attr = OrderedDict(sorted(attr.items()))
+        c = ''
+        for k,v in attr.items():
+            c += '\n' + str(k) + '\t' + str(self.k)
+        #end for
+        print c[1:] #remove heading whitespace
+    #end def __repr__
+    
     def error(self, text):
         print 'ERROR: ', str(text)
         exit()
