@@ -1,6 +1,6 @@
 #!/usr/bin/env pythonw
 
-from numpy import array, abs, pi, sqrt,linspace, zeros, exp, reshape
+from numpy import array, abs, pi, sqrt,linspace, zeros, exp, reshape, isclose
 from util.basic import obj
 from scipy.special import factorial2, factorial
 from grid import Grid
@@ -42,11 +42,13 @@ class Orbital(obj):
         x = array(x)
         v = self.value(x)
         rij = x[:,0]
-        plt.plot(rij,v, label='f')
+        plt.plot(rij,v, label='pow= '+str(self.pow))
         plt.axhline(y=0, linestyle='--', color='k')
         plt.axhline(y=1, linestyle='--', color='k')
         plt.axvline(x=0, linestyle='--', color='k')
         plt.axvline(x=3, linestyle='--', color='k')
+        plt.xlabel('Distance (r)')
+        plt.ylabel('Amplitude')
         plt.legend()
         return plt
     #end def
@@ -60,22 +62,22 @@ class pgto(Orbital):
 
     g(x,y,z) = A*(x^l)*(y^m)*(z^n)*exp{-a*(r-r_0)^2}
     '''    
-    def __init__(self, origin=(0,0,0), lmn=(0,0,0), exp=1.0):
+    def __init__(self, origin=(0,0,0), pow=(0,0,0), exp=1.0):
         assert len(origin) == 3
-        assert len(lmn) == 3
+        assert len(pow) == 3
         
         self.type   = 'Primitive GTO'
         self.origin = origin
-        self.lmn    = lmn
+        self.pow    = pow
         self.exp    = float(exp)
         self._normalize()
     #end def
     
     def _normalize(self):
-        l,m,n = self.lmn
-        slmn  = l+m+n
+        l,m,n = self.pow
+        spow  = l+m+n
 
-        self.norm = ((2**(2*slmn+3./2)*self.exp**(slmn+3./2)) /
+        self.norm = ((2**(2*spow+3./2)*self.exp**(spow+3./2)) /
                      (factorial2(2*l-1)*factorial2(2*m-1)*factorial2(2*n-1)*pi**(3./2)))**(1./2)
     #end def
     
@@ -87,14 +89,21 @@ class pgto(Orbital):
         if isinstance(grid, Grid):
             xn, yn, zn = grid.get_gridv()
             shape      = grid.shape
-        elif grid.shape[1] == 3:
-            xn = grid[:,0]
-            yn = grid[:,1]
-            zn = grid[:,2]
         else:
-            self.error('Not Grid or list of points')
+            grid=array(grid)
+            if grid.ndim == 1:
+                xn = grid[0]
+                yn = grid[1]
+                zn = grid[2]
+            elif grid.ndim == 2:
+                xn = grid[:,0]
+                yn = grid[:,1]
+                zn = grid[:,2]
+            else:
+                self.error('Not Grid or list of points')
+            #end if
         #end if
-            
+        
         dx, dy, dz = xn-x0, yn-y0, zn-z0
         r_sq =dx**2+dy**2+dz**2
     
@@ -109,7 +118,7 @@ class pgto(Orbital):
     def value(self, grid):
 
         # g(x,y,z)
-        l, m, n = self.lmn
+        l, m, n = self.pow
         A       = self.norm
         a       = self.exp
         
@@ -125,8 +134,8 @@ class pgto(Orbital):
         https://journals.jps.jp/doi/pdf/10.1143/JPSJ.21.2313
         '''
         assert isinstance(orb, pgto)
-        l1, m1, n1 = self.lmn
-        l2, m2, n2 = orb.lmn
+        l1, m1, n1 = self.pow
+        l2, m2, n2 = orb.pow
         a1 = self.exp
         a2 = orb.exp
 
@@ -178,14 +187,14 @@ class pgto(Orbital):
         '''
         assert isinstance(orb, pgto)
         a2 = orb.exp
-        l1, m1, n1 = self.lmn
-        l2, m2, n2 = orb.lmn
+        l1, m1, n1 = self.pow
+        l2, m2, n2 = orb.pow
         a1 = self.exp
         a2 = orb.exp
 
         result = a2*(2*(l2+m2+n2)+3)*self.S(orb) \
-            -2*a2**2(self.S(orb.get_new_nlm((l2+2, m2, n2))) + self.S(orb.get_new_nlm((l2, m2+2, n2))) + self.S(orb.get_new_nlm((l2, m2, n2+2)))) \
-            - 1./2*(l2*(l2-1)*self.S(orb.get_new_nlm((l2-2, m2, n2))) + m2*(m2-1)*self.S(orb.get_new_nlm((l2, m2-2, n2))) + n2*(n2-1)*self.S(orb.get_new_nlm((l2, m2, n2-2))))
+            -2*a2**2(self.S(orb.get_new_pow((l2+2, m2, n2))) + self.S(orb.get_new_pow((l2, m2+2, n2))) + self.S(orb.get_new_pow((l2, m2, n2+2)))) \
+            - 1./2*(l2*(l2-1)*self.S(orb.get_new_pow((l2-2, m2, n2))) + m2*(m2-1)*self.S(orb.get_new_pow((l2, m2-2, n2))) + n2*(n2-1)*self.S(orb.get_new_pow((l2, m2, n2-2))))
 
         return result
         
@@ -199,8 +208,8 @@ class pgto(Orbital):
         '''
         assert isinstance(orb, pgto)
         a2 = orb.exp
-        l1, m1, n1 = self.lmn
-        l2, m2, n2 = orb.lmn
+        l1, m1, n1 = self.pow
+        l2, m2, n2 = orb.pow
         a1 = self.exp
         a2 = orb.exp
         
@@ -259,8 +268,8 @@ class pgto(Orbital):
         return result
     #end def
 
-    def get_new_nlm(self, nlm):
-        a = pgto(origin=self.origin, nlm=nlm, exp=self.exp)
+    def get_new_pow(self, pow):
+        a = pgto(origin=self.origin, pow=pow, exp=self.exp)
         return a
     #end def
     
@@ -274,12 +283,12 @@ class cgto(obj):
     
     '''
     
-    def __init__(self, origin=(0,0,0), lmn=(0,0,0), exps=[], coeffs=[]):
+    def __init__(self, origin=(0,0,0), pow=(0,0,0), exps=[], coeffs=[]):
         assert len(origin) == 3
-        assert len(lmn) == 3
+        assert len(pow) == 3
 
         self.origin = origin
-        self.lmn    = lmn
+        self.pow    = pow
         self.pgtos  = [] # Made of pgtos
         self.coeffs = []
         for expn, coeffn in zip(exps, coeffs):
@@ -289,7 +298,7 @@ class cgto(obj):
     #end def
         
     def add_pgto(self, expn, coefn):
-        self.pgtos.append(pgto(origin=self.origin, lmn=self.lmn, exp=expn))
+        self.pgtos.append(pgto(origin=self.origin, pow=self.pow, exp=expn))
         self.coeffs.append(coefn)
     #end def
 
@@ -302,11 +311,18 @@ class BasisSet(obj):
         self.bfs = []
         self.shells = []
             
-
 if __name__  == '__main__':
     print '1s orbital '
-    ss = pgto()
-    print ss
-    plt = ss.plot_1D()
-    plt.show()
+    s1 = pgto()
+    assert(isclose(s1.value([0,0,0]), 0.7127054))
+    print s1
+    plt  = s1.plot_1D()
+    print
+    print 
+    print 'px orbital '
+    px = pgto(pow=(1,0,0))
+    assert(isclose(px.value([0,0,0]), 0.0))
+    print px
+    px.plot_1D()
 
+    plt.show()
