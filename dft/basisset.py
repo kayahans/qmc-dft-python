@@ -292,7 +292,7 @@ class cgto(obj):
         self.pgtos  = [] # Made of pgtos
         self.coeffs = []
         for expn, coeffn in zip(exps, coeffs):
-            self.add_pgto(expn, coef)
+            self.add_pgto(expn, coeffs)
 
         self.normalize()
     #end def
@@ -310,19 +310,44 @@ class BasisSet(obj):
     def __init__(self,molecule, name='sto3g'):
         self.bfs = []
         self.shells = []
-            
-if __name__  == '__main__':
-    print '1s orbital '
-    s1 = pgto()
-    assert(isclose(s1.value([0,0,0]), 0.7127054))
-    print s1
-    plt  = s1.plot_1D()
-    print
-    print 
-    print 'px orbital '
-    px = pgto(pow=(1,0,0))
-    assert(isclose(px.value([0,0,0]), 0.0))
-    print px
-    px.plot_1D()
 
-    plt.show()
+class STO(obj):
+    """
+    Gaussian fits to STO
+    Currently supports up to Ne
+    """
+
+    nlm2pow = {
+        (1,0,0) : (0,0,0,0),   # x,y,z,r
+        (2,0,0) : (0,0,0,1),
+        (2,1,0) : (1,0,0,0),
+        (2,1,1) : (0,1,0,0),
+        (2,1,-1) : (0,0,1,0),
+    }
+    def __init__(self, nlm=(1,0,0), origin=(0,0,0)):
+        self.args = args
+        exp_1s = 
+
+                
+                
+
+
+if __name__  == '__main__':
+    #print '1s orbital '
+    #s1 = pgto()
+    #assert(isclose(s1.value([0,0,0]), 0.7127054))
+    #print s1
+    #plt  = s1.plot_1D()
+    #print
+    #print 
+    #print 'px orbital '
+    #px = pgto(pow=(1,0,0))
+    #assert(isclose(px.value([0,0,0]), 0.0))
+    #print px
+    #px.plot_1D()
+    
+    #plt.show()
+
+    s1  = cgto(exps=[1], coeffs=[1])
+    pdb.set_trace()
+    print s1
